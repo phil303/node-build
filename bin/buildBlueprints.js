@@ -123,10 +123,50 @@ var config = makeConfig(argv);
 
 build(config, function(stats) {
   if (stats.errors && stats.errors.length > 0 && !argv.watch) {
-    console.log(colors.red(
-      'ERROR IN BUILD. Aborting.'
-    ));
-
+    console.log(colors.red('ERROR IN BUILD. Aborting.'));
     process.exit(1);
   }
+
+  console.log("stats", stats);
+  console.log("stats.assets", stats.assets);
+  if (argv.runTest) {
+    console.log(colors.magenta(
+      '\n   ******************************' +
+      '\n   *       RUNNING TESTS        *' +
+      '\n   ******************************'
+    ));
+
+    // m = new Mocha();
+    // m.files = stats.assets.map(function(asset) {
+      // return './.test/' + asset.name;
+    // });
+
+    // m.run();
+
+    // watcher = chokidar.watch(testingPath, { persistent: true });
+    // watcher
+      // .on('change', function() {
+        // invalidateMochaCache(m);
+        // m.run();
+      // });
+      // .on('add', function(path) {
+        // var hasMatchingPath = mocha.files.some(function(filePath) {
+          // return filePath === path;
+        // });
+
+        // if (!hasMatchingPath) {
+          // invalidateMochaCache();
+          // m.addFile(path);
+          // m.run();
+        // }
+      // });
+  }
 });
+
+function invalidateMochaCache(mochaInstance) {
+  mochaInstance.suite.suites = [];
+  mochaInstance.files.forEach(function(filePath) {
+    var fullPath = path.resolve(filePath)
+    delete require.cache[require.resolve(fullPath)];
+  });
+}

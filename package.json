@@ -60,9 +60,6 @@
     "eslint-plugin-react": "^5.1.1",
     "react": "^15.0.2",
     "react-dom": "^15.0.2"
-    "karma": "^0.13.22",
-    "karma-webpack": "^1.7.0",
-    "karma-mocha": "^1.0.1"
   },
   "peerDependencies": {
     "source-map-support": "~0.4.0"
