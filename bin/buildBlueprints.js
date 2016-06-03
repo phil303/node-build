@@ -129,22 +129,4 @@ build(config, function(stats) {
 
     process.exit(1);
   }
-
-  if (argv.runTest) {
-    console.log(colors.magenta(
-      '\n   ******************************' +
-      '\n   *       RUNNING TESTS        *' +
-      '\n   ******************************'
-    ));
-
-    var m = new Mocha();
-    stats.assets.forEach(function(asset) {
-      var path = './.test/' + asset.name;
-      m.addFile(path);
-    });
-    m.run()
-      .on('end', function() {
-        rimraf('./.test/', function() {});
-      });
-  }
 });
