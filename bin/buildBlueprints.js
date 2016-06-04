@@ -127,8 +127,6 @@ build(config, function(stats) {
     process.exit(1);
   }
 
-  console.log("stats", stats);
-  console.log("stats.assets", stats.assets);
   if (argv.runTest) {
     console.log(colors.magenta(
       '\n   ******************************' +
@@ -136,37 +134,17 @@ build(config, function(stats) {
       '\n   ******************************'
     ));
 
-    // m = new Mocha();
-    // m.files = stats.assets.map(function(asset) {
-      // return './.test/' + asset.name;
-    // });
+    // TODO: this is still leaving files around
+    m = new Mocha();
+    m.files = stats.assets.map(function(asset) {
+      return './.test/' + asset.name;
+    });
+    m.run();
 
-    // m.run();
-
-    // watcher = chokidar.watch(testingPath, { persistent: true });
-    // watcher
-      // .on('change', function() {
-        // invalidateMochaCache(m);
-        // m.run();
-      // });
-      // .on('add', function(path) {
-        // var hasMatchingPath = mocha.files.some(function(filePath) {
-          // return filePath === path;
-        // });
-
-        // if (!hasMatchingPath) {
-          // invalidateMochaCache();
-          // m.addFile(path);
-          // m.run();
-        // }
-      // });
+    // we want to remove these from the require cache while we have path
+    // references to them to ensure they get tested on the next rebuild
+    m.files.forEach(function(filePath) {
+      delete require.cache[require.resolve(path.resolve(filePath))];
+    });
   }
 });
-
-function invalidateMochaCache(mochaInstance) {
-  mochaInstance.suite.suites = [];
-  mochaInstance.files.forEach(function(filePath) {
-    var fullPath = path.resolve(filePath)
-    delete require.cache[require.resolve(fullPath)];
-  });
-}
